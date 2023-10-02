@@ -56,33 +56,35 @@ type Item = {
 type Data = {
     items: Item[];
     pages: number;
-    per_page: number;
-    page: number
 }
 
 export default function JobList() {
-
     const ITEMS_PER_PAGE = 5;
 
     const [data, setData] = useState<Data | null>(null);
-    const [loading, setLoading] = useState(true)
+    const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(0);
-    const [displayedVacancies, setDisplayedVacancies] = useState<Item[]>([]);
 
     useEffect(() => {
-        fetch(`https://api.hh.ru/vacancies?page=${currentPage}`)
+        fetch(`https://api.hh.ru/vacancies?page=${currentPage}&per_page=${ITEMS_PER_PAGE}`)
             .then((res) => {
                 if (!res.ok) {
                     throw new Error('Failed to fetch data');
                 }
                 return res.json();
             })
-            .then((data) => {
-                setData(data);
+            .then((responseData) => {
+                const pages = responseData.pages;
+
+                setData((prevData) => ({
+                    ...responseData,
+                    items: [...(prevData?.items || []), ...responseData.items],
+                    pages: responseData.pages
+                }));
+
                 setLoading(false);
             })
-
             .catch((error) => {
                 setError(error.message);
                 setLoading(false);
@@ -91,21 +93,21 @@ export default function JobList() {
 
     const showMore = () => {
         if (data && data.items) {
+            const nextPage = currentPage + 1;
             const nextVacancies = data.items.slice(
-                displayedVacancies.length,
-                displayedVacancies.length + ITEMS_PER_PAGE
+                nextPage * ITEMS_PER_PAGE,
+                nextPage * ITEMS_PER_PAGE + ITEMS_PER_PAGE
             );
-            setDisplayedVacancies((prevVacancies) => [...prevVacancies, ...nextVacancies]);
-        }
 
-    }
+            setData((prevData) => ({
+                ...prevData,
+                items: [...(prevData?.items || []), ...nextVacancies],
+                pages: data.pages,
+            }));
 
-    useEffect(() => {
-        if (data && data.items) {
-            const initialVacancies = data.items.slice(0, ITEMS_PER_PAGE);
-            setDisplayedVacancies(initialVacancies);
+            setCurrentPage(nextPage);
         }
-    }, [data]);
+    };
 
     if (loading) {
         return <p>Loading...</p>;
@@ -115,34 +117,34 @@ export default function JobList() {
         return <p>Error: {error}</p>;
     }
 
-    if (!displayedVacancies || displayedVacancies.length === 0) {
+    if (!data?.items || data.items.length === 0) {
         return <p>No vacancies found.</p>;
     }
 
-    else {
-        return (
-            <>
-                <h1>List of vacancies</h1>
-                <div className="filters__section">
-                    <select>
-                        <option>Full time</option>
-                        <option>Half time</option>
-                        <option>Part time</option>
-                    </select>
-                    <select>
-                        <option>Нет опыта</option>
-                    </select>
-                    <button>Search</button>
-                </div>
-                <ul>
-                    {displayedVacancies.map((item) => (
-                        <li key={item.id}>
-                            <JobCard vacancy={item} />
-                        </li>
-                    ))}
-                </ul>
-                <button onClick={showMore}>Show more</button>
-            </>
-        );
-    }
+    const hasMorePages = currentPage < data.pages;
+
+    return (
+        <>
+            <h1>List of vacancies</h1>
+            <div className="filters__section">
+                <select>
+                    <option>Full time</option>
+                    <option>Half time</option>
+                    <option>Part time</option>
+                </select>
+                <select>
+                    <option>Нет опыта</option>
+                </select>
+                <button>Search</button>
+            </div>
+            <ul>
+                {data.items.map((item) => (
+                    <li key={item.id}>
+                        <JobCard vacancy={item} />
+                    </li>
+                ))}
+            </ul>
+            {hasMorePages ?? <button onClick={showMore}>Show more</button>}
+        </>
+    );
 }
