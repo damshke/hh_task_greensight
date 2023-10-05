@@ -49,7 +49,14 @@ type Item = {
     employment: Employment;
 };
 
+//  ОСТАЛОСЬ СДЕЛАТЬ:
+// 1. раскрытие описания (ввести стейт)
+// 2. кнопка респонд (прсто алерт?)
+// 3. собственно css
+
 export default function JobCard({ vacancy }: { vacancy: Item }) {
+
+
 
     const address = (vacancy: Item) => {
         if (vacancy.address) {
@@ -88,10 +95,22 @@ export default function JobCard({ vacancy }: { vacancy: Item }) {
     }
 
     return (
+        // сделать фильтрацию и описание
         <div className='vacancy-card'>
-            <h2>{vacancy.name}</h2>
+            <div>
+                <h3>{vacancy.name}</h3>
+                <img></img>
+                <button>Respond</button>
+            </div>
+            <div>
             <p>{address(vacancy)}</p>
+            <p>{vacancy.experience.name}</p>
+            <p>{vacancy.employment.name}</p>
             <p>{salary(vacancy)}</p>
+            </div>
+            <div>
+                {/* тут будет описание  */}
+            </div>
             <button>More details</button>
         </div>
     );

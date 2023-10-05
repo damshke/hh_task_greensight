@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import JobCard from './JobCard'
 
 type Adress = {
@@ -58,6 +58,11 @@ type Data = {
     pages: number;
 }
 
+type Option = {
+    id: string;
+    name?: string;
+}
+
 export default function JobList() {
     const ITEMS_PER_PAGE = 5;
 
@@ -66,8 +71,24 @@ export default function JobList() {
     const [error, setError] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(0);
 
-    useEffect(() => {
-        fetch(`https://api.hh.ru/vacancies?page=${currentPage}&per_page=${ITEMS_PER_PAGE}`)
+    const [formOptions, setFormOptions] = useState<Option[]>([]);
+    const [experienceOptions, setExperienceOptions] = useState<Option[]>([]);
+    const [selectedForm, setSelectedForm] = useState<Option | null>(null);
+    const [selectedExperience, setSelectedExperience] = useState<Option | null>(null);
+
+
+    const searchVacancies = (page: number) => {
+        console.log(selectedForm, selectedExperience);
+        let search = {
+            page: String(page),
+            per_page: String(ITEMS_PER_PAGE)
+        }
+        if (selectedForm?.id) Object.assign(search, { employment: String(selectedForm.id) })
+        if (selectedExperience?.id) Object.assign(search, { experience: String(selectedExperience.id) })
+
+        const params = new URLSearchParams(search).toString();
+
+        fetch(`https://api.hh.ru/vacancies?${params}`)
             .then((res) => {
                 if (!res.ok) {
                     throw new Error('Failed to fetch data');
@@ -75,13 +96,20 @@ export default function JobList() {
                 return res.json();
             })
             .then((responseData) => {
-                const pages = responseData.pages;
-
-                setData((prevData) => ({
-                    ...responseData,
-                    items: [...(prevData?.items || []), ...responseData.items],
-                    pages: responseData.pages
-                }));
+                if (page > 0) {
+                    setData((prevData) => ({
+                        ...prevData,
+                        items: [...(prevData?.items || []), ...responseData.items],
+                        pages: responseData.pages,
+                    }));
+                }
+                else {
+                    setData(({
+                        ...responseData,
+                        items: [...responseData.items],
+                        pages: responseData.pages
+                    }));
+                }
 
                 setLoading(false);
             })
@@ -89,28 +117,80 @@ export default function JobList() {
                 setError(error.message);
                 setLoading(false);
             });
-    }, [currentPage]);
+    }
+
+    useEffect(() => {
+        fetch('https://api.hh.ru/dictionaries')
+            .then((res) => res.json())
+            .then((data) => {
+                setFormOptions(data.employment);
+                setExperienceOptions(data.experience);
+            })
+            .catch((error) => {
+                console.error('Error loading:', error);
+            });
+    }, []);
+
+    useEffect(() => {
+        searchVacancies(0);
+    }, []);
 
     const showMore = () => {
-        if (data && data.items) {
-            const nextPage = currentPage + 1;
-            const nextVacancies = data.items.slice(
-                nextPage * ITEMS_PER_PAGE,
-                nextPage * ITEMS_PER_PAGE + ITEMS_PER_PAGE
-            );
-
-            setData((prevData) => ({
-                ...prevData,
-                items: [...(prevData?.items || []), ...nextVacancies],
-                pages: data.pages,
-            }));
-
-            setCurrentPage(nextPage);
-        }
+        let nextPage = currentPage + 1;
+        setCurrentPage(currentPage + 1);
+        searchVacancies(nextPage);
     };
 
+    const clearFilters = () => {
+        setSelectedExperience(null);
+        setSelectedForm(null);
+    };
+
+    useEffect(() => {
+        if (selectedForm == null && selectedExperience == null) searchVacancies(0);
+    }, [selectedForm, selectedExperience]);
+
     if (loading) {
-        return <p>Loading...</p>;
+        return (
+            <div>
+                <h1>List of vacancies</h1>
+                <div className='card-container'>
+                    <div className='filters-section'>
+                        <div>
+                            <label>Form</label>
+                            <select
+                                value={selectedForm?.id || ''}
+                                onChange={(e) => setSelectedForm((prev) => ({ ...prev, id: String(e.target.value) }))}
+                            >
+                                <option value=''>Not selected</option>
+                                {formOptions.map((option) => (
+                                    <option key={option.id} value={option.id}>
+                                        {option.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <label>Experience</label>
+                            <select
+                                value={selectedExperience?.id || ''}
+                                onChange={(e) => setSelectedExperience((prev) => ({ ...prev, id: String(e.target.value) }))}
+                            >
+                                <option value=''>Not selected</option>
+                                {experienceOptions.map((option) => (
+                                    <option key={option.id} value={option.id}>
+                                        {option.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <button className='searchButton' onClick={() => searchVacancies(0)}>Search</button>
+                        <button className='searchButton' onClick={clearFilters}>Clear filters</button>
+                    </div>
+                </div>
+                <p>Loading...</p>
+            </div>
+        );
     }
 
     if (error) {
@@ -118,33 +198,94 @@ export default function JobList() {
     }
 
     if (!data?.items || data.items.length === 0) {
-        return <p>No vacancies found.</p>;
+        return (
+            <div>
+                <h1>List of vacancies</h1>
+                <div className='card-container'>
+                    <div className='filters-section'>
+                        <div>
+                            <label>Form</label>
+                            <select
+                                value={selectedForm?.id || ''}
+                                onChange={(e) => setSelectedForm((prev) => ({ ...prev, id: String(e.target.value) }))}
+                            >
+                                <option value=''>Not selected</option>
+                                {formOptions.map((option) => (
+                                    <option key={option.id} value={option.id}>
+                                        {option.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <div>
+                            <label>Experience</label>
+                            <select
+                                value={selectedExperience?.id || ''}
+                                onChange={(e) => setSelectedExperience((prev) => ({ ...prev, id: String(e.target.value) }))}
+                            >
+                                <option value=''>Not selected</option>
+                                {experienceOptions.map((option) => (
+                                    <option key={option.id} value={option.id}>
+                                        {option.name}
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <button className='searchButton' onClick={() => searchVacancies(0)}>Search</button>
+                        <button className='clearButton' onClick={clearFilters}>Clear filters</button>
+                    </div>
+                </div>
+            </div>
+        );
     }
 
-    const hasMorePages = currentPage < data.pages;
+    const hasMorePages = currentPage <= data.pages;
 
     return (
-        <>
+        <div>
             <h1>List of vacancies</h1>
-            <div className="filters__section">
-                <select>
-                    <option>Full time</option>
-                    <option>Half time</option>
-                    <option>Part time</option>
-                </select>
-                <select>
-                    <option>Нет опыта</option>
-                </select>
-                <button>Search</button>
+            <div className='card-container'>
+                <div className='filters-section'>
+                    <div>
+                        <label>Form</label>
+                        <select
+                            value={selectedForm?.id || ''}
+                            onChange={(e) => setSelectedForm((prev) => ({ ...prev, id: String(e.target.value) }))}
+                        >
+                            <option value=''>Not selected</option>
+                            {formOptions.map((option) => (
+                                <option key={option.id} value={option.id}>
+                                    {option.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <div>
+                        <label>Experience</label>
+                        <select
+                            value={selectedExperience?.id || ''}
+                            onChange={(e) => setSelectedExperience((prev) => ({ ...prev, id: String(e.target.value) }))}
+                        >
+                            <option value=''>Not selected</option>
+                            {experienceOptions.map((option) => (
+                                <option key={option.id} value={option.id}>
+                                    {option.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <button className='searchButton' onClick={() => searchVacancies(0)}>Search</button>
+                    <button className='clearButton' onClick={clearFilters}>Clear filters</button>
+                </div>
+                <ul>
+                    {data.items.map((item) => (
+                        <li key={item.id}>
+                            <JobCard vacancy={item} />
+                        </li>
+                    ))}
+                </ul>
+                {hasMorePages && <button className='showMoreButton' onClick={showMore}>Show more</button>}
             </div>
-            <ul>
-                {data.items.map((item) => (
-                    <li key={item.id}>
-                        <JobCard vacancy={item} />
-                    </li>
-                ))}
-            </ul>
-            {hasMorePages ?? <button onClick={showMore}>Show more</button>}
-        </>
+        </div>
     );
 }
