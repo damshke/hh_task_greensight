@@ -29,6 +29,7 @@ export default function Footer() {
                         type="text"
                         className="phone"
                         placeholder="+7 (___) ___-__-__"
+                        pattern="^((\\+[7])|[8]){1}[0-9]{10}"
                     />
                 </div>
                 <div>

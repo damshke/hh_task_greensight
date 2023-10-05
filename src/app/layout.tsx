@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   description: 'To study Next.js and fun',
 }
 
+// исправить подключение шрифтов
+
 export default function RootLayout({
   children,
 }: {

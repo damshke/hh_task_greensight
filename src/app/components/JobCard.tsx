@@ -1,5 +1,7 @@
 "use client"
 
+import { useEffect, useState, useRef } from "react";
+
 type Adress = {
     city?: string;
     raw?: string;
@@ -21,7 +23,7 @@ type Metro = {
 }
 
 type Logos = {
-
+    original?: string;
 }
 
 type Employer = {
@@ -47,6 +49,8 @@ type Item = {
     employer: Employer;
     experience: Experience;
     employment: Employment;
+    url: string;
+    alternate_url: string;
 };
 
 //  ОСТАЛОСЬ СДЕЛАТЬ:
@@ -56,7 +60,16 @@ type Item = {
 
 export default function JobCard({ vacancy }: { vacancy: Item }) {
 
+    const [description, setDescription] = useState("");
+    const [expandedDescription, setExpandedDescription] = useState(false);
 
+    const expandRef = useRef()
+
+    useEffect(() => {
+        fetch(vacancy.url)
+            .then((res) => res.json())
+            .then((data) => setDescription(data.description));
+    }, [vacancy.url]);
 
     const address = (vacancy: Item) => {
         if (vacancy.address) {
@@ -65,7 +78,7 @@ export default function JobCard({ vacancy }: { vacancy: Item }) {
         if (vacancy.area) {
             return vacancy.area.name;
         }
-        return null
+        return '';
     }
 
     const salary = (vacancy: Item) => {
@@ -90,28 +103,73 @@ export default function JobCard({ vacancy }: { vacancy: Item }) {
                 return `to ${vacancy.salary.from}`
             }
 
-            return null
+            return ''
         }
     }
 
+    const logo = (vacancy: Item) => {
+        if (vacancy.employer && vacancy.employer.logo_urls) {
+            return vacancy.employer.logo_urls.original;
+        }
+        else {
+            return '';
+        }
+    }
+
+    function clickRespond() {
+
+    }
+
     return (
-        // сделать фильтрацию и описание
+
         <div className='vacancy-card'>
-            <div>
-                <h3>{vacancy.name}</h3>
-                <img></img>
-                <button>Respond</button>
+            <div className="vacancy-card__head">
+                <div>
+                    <h3>{vacancy.name}</h3>
+                    {logo(vacancy) != '' && <img className="vacancy-card__logo" src={logo(vacancy)}></img>}
+                </div>
+                <a
+                    className="respondButton"
+                    href={vacancy.alternate_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                >
+                    Respond
+                </a>
             </div>
-            <div>
-            <p>{address(vacancy)}</p>
-            <p>{vacancy.experience.name}</p>
-            <p>{vacancy.employment.name}</p>
-            <p>{salary(vacancy)}</p>
+            <div className="vacancy-card__info">
+                <p>
+                    <span className="text-gray">Form </span>
+                    <span>{vacancy.employment.name}</span>
+                </p>
+                <p>
+                    <span className="text-gray">Company </span>
+                    <span>{vacancy.employer.name}</span>
+                </p>
+                <p>
+                    <span className="text-gray">Experience </span>
+                    <span>{vacancy.experience.name}</span>
+                </p>
+                <p>
+                    <span className="text-gray">Address </span>
+                    <span>{address(vacancy)}</span>
+                </p>
+                <p>
+                    <span className="text-gray">Salary </span>
+                    <span>{salary(vacancy)}</span>
+                </p>
             </div>
-            <div>
-                {/* тут будет описание  */}
+            <div className="vacancy-card__description">
+                <div className={`description-content__overlay ${expandedDescription ? 'disabled' : 'enabled'}`}>
+                    <div
+                        className={`description-content ${expandedDescription ? 'expanded' : 'hidden'}`}
+                        dangerouslySetInnerHTML={{ __html: description }} />
+                </div>
+                <button className='vacancy-card__expand-button' ref={expandRef.current}
+                    onClick={() => setExpandedDescription((prevState) => !prevState)} >
+                    {expandedDescription ? "Close details" : "More details"}
+                </button>
             </div>
-            <button>More details</button>
         </div>
     );
 }
