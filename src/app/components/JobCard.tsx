@@ -1,6 +1,9 @@
 "use client"
 
 import { useEffect, useState, useRef } from "react";
+import ChevronDown from '../icons/chevronDown.svg';
+import ChevronUp from '../icons/chevronUp.svg';
+import './styles/JobCard.css'
 
 type Adress = {
     city?: string;
@@ -54,7 +57,6 @@ type Item = {
 };
 
 //  ОСТАЛОСЬ СДЕЛАТЬ:
-// 1. раскрытие описания (ввести стейт)
 // 2. кнопка респонд (прсто алерт?)
 // 3. собственно css
 
@@ -87,6 +89,10 @@ export default function JobCard({ vacancy }: { vacancy: Item }) {
                 return `${vacancy.salary.from} - ${vacancy.salary.to}, ${vacancy.salary.currency}`
             }
 
+            if (vacancy.salary.from && vacancy.salary.to) {
+                return `${vacancy.salary.from} - ${vacancy.salary.to}`
+            }
+
             if (vacancy.salary.from && vacancy.salary.currency) {
                 return `from ${vacancy.salary.from}, ${vacancy.salary.currency}`
             }
@@ -102,8 +108,9 @@ export default function JobCard({ vacancy }: { vacancy: Item }) {
             if (vacancy.salary.to) {
                 return `to ${vacancy.salary.from}`
             }
-
-            return ''
+        }
+        else {
+            return '';
         }
     }
 
@@ -154,10 +161,11 @@ export default function JobCard({ vacancy }: { vacancy: Item }) {
                     <span className="text-gray">Address </span>
                     <span>{address(vacancy)}</span>
                 </p>
-                <p>
-                    <span className="text-gray">Salary </span>
-                    <span>{salary(vacancy)}</span>
-                </p>
+                {salary(vacancy) != '' &&
+                    <p>
+                        <span className="text-gray">Salary </span>
+                        <span>{salary(vacancy)}</span>
+                    </p>}
             </div>
             <div className="vacancy-card__description">
                 <div className={`description-content__overlay ${expandedDescription ? 'disabled' : 'enabled'}`}>
@@ -165,10 +173,16 @@ export default function JobCard({ vacancy }: { vacancy: Item }) {
                         className={`description-content ${expandedDescription ? 'expanded' : 'hidden'}`}
                         dangerouslySetInnerHTML={{ __html: description }} />
                 </div>
-                <button className='vacancy-card__expand-button' ref={expandRef.current}
-                    onClick={() => setExpandedDescription((prevState) => !prevState)} >
-                    {expandedDescription ? "Close details" : "More details"}
-                </button>
+                {expandedDescription == false && <button className='vacancy-card__expand-button' ref={expandRef.current}
+                    onClick={() => setExpandedDescription((prevState) => !prevState)}>
+                    More details
+                    <ChevronDown className="chevron" />
+                </button>}
+                {expandedDescription == true && <button className='vacancy-card__expand-button' ref={expandRef.current}
+                    onClick={() => setExpandedDescription((prevState) => !prevState)}>
+                    Less details
+                    <ChevronUp className="chevron" />
+                </button>}
             </div>
         </div>
     );

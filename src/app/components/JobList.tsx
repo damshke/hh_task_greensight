@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useRef } from 'react'
 import JobCard from './JobCard'
+import Close from '../icons/close.svg'
+import './styles/JobList.css'
 
 type Adress = {
     city?: string;
@@ -160,11 +162,11 @@ export default function JobList() {
                         <div>
                             <div>
                                 <label>Form</label>
-                                <select
+                                <select required
                                     value={selectedForm?.id || ''}
                                     onChange={(e) => setSelectedForm((prev) => ({ ...prev, id: String(e.target.value) }))}
                                 >
-                                    <option value=''>Not selected</option>
+                                    <option value='' disabled selected>Not selected</option>
                                     {formOptions.map((option) => (
                                         <option key={option.id} value={option.id}>
                                             {option.name}
@@ -174,11 +176,11 @@ export default function JobList() {
                             </div>
                             <div>
                                 <label>Experience</label>
-                                <select
+                                <select required
                                     value={selectedExperience?.id || ''}
                                     onChange={(e) => setSelectedExperience((prev) => ({ ...prev, id: String(e.target.value) }))}
                                 >
-                                    <option value=''>Not selected</option>
+                                    <option value='' disabled selected>Not selected</option>
                                     {experienceOptions.map((option) => (
                                         <option key={option.id} value={option.id}>
                                             {option.name}
@@ -190,12 +192,10 @@ export default function JobList() {
                         <button className='searchButton' onClick={() => searchVacancies(0)}>Search</button>
                     </div>
                     {(selectedForm != null || selectedExperience != null) && <button className='clearButton' onClick={clearFilters}>
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M12.0203 4.02018C12.2156 3.82492 12.2156 3.50833 12.0203 3.31307C11.825 3.11781 11.5085 3.11781 11.3132 3.31307L7.66675 6.95952L4.0203 3.31307C3.82504 3.11781 3.50846 3.11781 3.31319 3.31307C3.11793 3.50833 3.11793 3.82492 3.31319 4.02018L6.95964 7.66663L3.31319 11.3131C3.11793 11.5083 3.11793 11.8249 3.31319 12.0202C3.50846 12.2154 3.82504 12.2154 4.0203 12.0202L7.66675 8.37373L11.3132 12.0202C11.5085 12.2154 11.825 12.2154 12.0203 12.0202C12.2156 11.8249 12.2156 11.5083 12.0203 11.3131L8.37386 7.66663L12.0203 4.02018Z" fill="#0D7AD9" />
-                        </svg>
+                        <Close className="closeIcon" />
                         Clear filters</button>}
                 </div>
-                <p>Loading...</p>
+                <p className='loading-section'>Loading...</p>
             </div>
         );
     }
@@ -213,11 +213,11 @@ export default function JobList() {
                         <div>
                             <div>
                                 <label>Form</label>
-                                <select
+                                <select required
                                     value={selectedForm?.id || ''}
                                     onChange={(e) => setSelectedForm((prev) => ({ ...prev, id: String(e.target.value) }))}
                                 >
-                                    <option value=''>Not selected</option>
+                                    <option value='' disabled selected>Not selected</option>
                                     {formOptions.map((option) => (
                                         <option key={option.id} value={option.id}>
                                             {option.name}
@@ -227,11 +227,11 @@ export default function JobList() {
                             </div>
                             <div>
                                 <label>Experience</label>
-                                <select
+                                <select required
                                     value={selectedExperience?.id || ''}
                                     onChange={(e) => setSelectedExperience((prev) => ({ ...prev, id: String(e.target.value) }))}
                                 >
-                                    <option value=''>Not selected</option>
+                                    <option value='' disabled selected>Not selected</option>
                                     {experienceOptions.map((option) => (
                                         <option key={option.id} value={option.id}>
                                             {option.name}
@@ -243,9 +243,7 @@ export default function JobList() {
                         <button className='searchButton' onClick={() => searchVacancies(0)}>Search</button>
                     </div>
                     {(selectedForm != null || selectedExperience != null) && <button className='clearButton' onClick={clearFilters}>
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path fill-rule="evenodd" clip-rule="evenodd" d="M12.0203 4.02018C12.2156 3.82492 12.2156 3.50833 12.0203 3.31307C11.825 3.11781 11.5085 3.11781 11.3132 3.31307L7.66675 6.95952L4.0203 3.31307C3.82504 3.11781 3.50846 3.11781 3.31319 3.31307C3.11793 3.50833 3.11793 3.82492 3.31319 4.02018L6.95964 7.66663L3.31319 11.3131C3.11793 11.5083 3.11793 11.8249 3.31319 12.0202C3.50846 12.2154 3.82504 12.2154 4.0203 12.0202L7.66675 8.37373L11.3132 12.0202C11.5085 12.2154 11.825 12.2154 12.0203 12.0202C12.2156 11.8249 12.2156 11.5083 12.0203 11.3131L8.37386 7.66663L12.0203 4.02018Z" fill="#0D7AD9" />
-                        </svg>
+                        <Close className="closeIcon" />
                         Clear filters</button>}
                 </div>
             </div>
@@ -257,61 +255,50 @@ export default function JobList() {
     return (
         <div>
             <h1>List of vacancies</h1>
-            <div className='card-container'>
-                <div className='filters_section'>
+            <div className='filters_section'>
+                <div>
                     <div>
-                        <div>
-                            <label>Form</label>
-                            <select
-                                value={selectedForm?.id || ''}
-                                onChange={(e) => setSelectedForm((prev) => ({ ...prev, id: String(e.target.value) }))}
-                            >
-                                <option value=''>Not selected</option>
-                                {formOptions.map((option) => (
-                                    <option key={option.id} value={option.id}>
-                                        {option.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                        <div>
-                            <label>Experience</label>
-                            <select
-                                value={selectedExperience?.id || ''}
-                                onChange={(e) => setSelectedExperience((prev) => ({ ...prev, id: String(e.target.value) }))}
-                            >
-                                <option value=''>Not selected</option>
-                                {experienceOptions.map((option) => (
-                                    <option key={option.id} value={option.id}>
-                                        {option.name}
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
+                        <label>Form</label>
+                        <select required
+                            value={selectedForm?.id || ''}
+                            onChange={(e) => setSelectedForm((prev) => ({ ...prev, id: String(e.target.value) }))}
+                        >
+                            <option value='' disabled selected>Not selected</option>
+                            {formOptions.map((option) => (
+                                <option key={option.id} value={option.id}>
+                                    {option.name}
+                                </option>
+                            ))}
+                        </select>
                     </div>
-                    <button className='searchButton' onClick={() => searchVacancies(0)}>Search</button>
+                    <div>
+                        <label>Experience</label>
+                        <select required
+                            value={selectedExperience?.id || ''}
+                            onChange={(e) => setSelectedExperience((prev) => ({ ...prev, id: String(e.target.value) }))}
+                        >
+                            <option value='' disabled selected>Not selected</option>
+                            {experienceOptions.map((option) => (
+                                <option key={option.id} value={option.id}>
+                                    {option.name}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
                 </div>
-                {(selectedForm != null || selectedExperience != null) && <button className='clearButton' onClick={clearFilters}>
-                    <svg width="16"
-                        height="16"
-                        viewBox="0 0 16 16"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
-                        style={{ verticalAlign: 'middle', marginRight: '4px' }}>
-                        <path fill-rule="evenodd"
-                            clip-rule="evenodd"
-                            d="M12.0203 4.02018C12.2156 3.82492 12.2156 3.50833 12.0203 3.31307C11.825 3.11781 11.5085 3.11781 11.3132 3.31307L7.66675 6.95952L4.0203 3.31307C3.82504 3.11781 3.50846 3.11781 3.31319 3.31307C3.11793 3.50833 3.11793 3.82492 3.31319 4.02018L6.95964 7.66663L3.31319 11.3131C3.11793 11.5083 3.11793 11.8249 3.31319 12.0202C3.50846 12.2154 3.82504 12.2154 4.0203 12.0202L7.66675 8.37373L11.3132 12.0202C11.5085 12.2154 11.825 12.2154 12.0203 12.0202C12.2156 11.8249 12.2156 11.5083 12.0203 11.3131L8.37386 7.66663L12.0203 4.02018Z" fill="#0D7AD9" />
-                    </svg>
-                    Clear filters</button>}
-                <ul>
-                    {data.items.map((item) => (
-                        <li key={item.id}>
-                            <JobCard vacancy={item} />
-                        </li>
-                    ))}
-                </ul>
-                {hasMorePages && <button className='showMoreButton' onClick={showMore}>Show more</button>}
+                <button className='searchButton' onClick={() => searchVacancies(0)}>Search</button>
             </div>
+            {(selectedForm != null || selectedExperience != null) && <button className='clearButton' onClick={clearFilters}>
+                <Close className="closeIcon" />
+                Clear filters</button>}
+            <ul>
+                {data.items.map((item) => (
+                    <li key={item.id}>
+                        <JobCard vacancy={item} />
+                    </li>
+                ))}
+            </ul>
+            {hasMorePages && <button className='showMoreButton' onClick={showMore}>Show more</button>}
         </div>
     );
 }
