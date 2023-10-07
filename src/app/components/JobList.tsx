@@ -99,13 +99,12 @@ export default function JobList() {
 
     return (
         <div>
-            <h1>List of vacancies</h1>
-            <div className='filters_section'>
-                <div>
-                    <div>
+            <h1 className="header">List of vacancies</h1>
+            <div className='filters'>
+                <div className='filters-section'>
+                    <div className='filter'>
                         <label>Form</label>
-                        <select
-                            defaultValue={''}
+                        <select className='filters-section__selector'
                             value={selectedForm?.id || ''}
                             onChange={(e) => setSelectedForm((prev) => ({ ...prev, id: String(e.target.value) }))}
                         >
@@ -117,10 +116,9 @@ export default function JobList() {
                             ))}
                         </select>
                     </div>
-                    <div>
+                    <div className='filter'>
                         <label>Experience</label>
-                        <select
-                            defaultValue={''}
+                        <select className='filters-section__selector'
                             value={selectedExperience?.id || ''}
                             onChange={(e) => setSelectedExperience((prev) => ({ ...prev, id: String(e.target.value) }))}
                         >
@@ -139,7 +137,7 @@ export default function JobList() {
                 <Close className="closeIcon" />
                 Clear filters</button>}
             {loading ? <p className='loading-section'>Loading...</p> :
-                <ul>
+                <ul className='vacancy-list'>
                     {data?.items.map((item) => (
                         <li key={item.id}>
                             <JobCard vacancy={item} />

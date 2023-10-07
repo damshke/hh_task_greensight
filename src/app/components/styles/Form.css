@@ -1,4 +1,4 @@
-form {
+.form-request {
     background-color: #F7F9FB;
     display: flex;
     flex-direction: column;
@@ -6,7 +6,7 @@ form {
     padding: 64px 120px 88px 120px;
 }
 
-form p {
+.form-request__text {
     text-align: center;
     font-weight: 400;
     font-size: 18px;
@@ -14,12 +14,12 @@ form p {
     margin-bottom: 40px;
 }
 
-a {
+.link {
     color: #0D7AD9;
     text-decoration: none;
 }
 
-h2 {
+.form-request__title {
     font-size: 34px;
     font-weight: 500;
     line-height: 43px;
@@ -28,13 +28,15 @@ h2 {
     margin-bottom: 20px;
 }
 
-form div {
+.form-request__input-section {
     display: flex;
     flex-direction: column;
     gap: 4px;
 }
 
-input[type="text"] {
+.initials,
+.phone,
+.email {
     font-size: 16px;
     font-weight: 400;
     padding: 5px;
@@ -54,7 +56,7 @@ input[type="text"] {
     text-align: left;
 }
 
-textarea.comment {
+.comment {
     font-size: 16px;
     box-sizing: border-box;
     padding: 12px;
@@ -136,18 +138,21 @@ textarea.comment {
     text-align: right;
 }
 
-.right__footer a {
+.right__footer .link {
     color: white;
     text-decoration-line: underline;
     text-decoration-color: rgba(255, 255, 255, 0.2);
 }
 
 @media (max-width: 600px) {
-    input[type="text"] {
+
+    .initials,
+    .phone,
+    .email {
         width: 100%;
     }
 
-    textarea.comment {
+    .comment {
         width: 100%;
     }
 
@@ -159,7 +164,7 @@ textarea.comment {
         width: 90%;
     }
 
-    form {
+    .form-request {
         padding: 4px;
     }
 

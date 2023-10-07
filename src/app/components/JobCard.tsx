@@ -83,24 +83,24 @@ export default function JobCard({ vacancy }: { vacancy: Item }) {
             <div className="vacancy-card__info">
                 <p>
                     <span className="text-gray">Form </span>
-                    <span>{vacancy.employment.name}</span>
+                    <span className="text">{vacancy.employment.name}</span>
                 </p>
                 <p>
                     <span className="text-gray">Company </span>
-                    <span>{vacancy.employer.name}</span>
+                    <span className="text">{vacancy.employer.name}</span>
                 </p>
                 <p>
                     <span className="text-gray">Experience </span>
-                    <span>{vacancy.experience.name}</span>
+                    <span className="text">{vacancy.experience.name}</span>
                 </p>
                 <p>
                     <span className="text-gray">Address </span>
-                    <span>{address(vacancy)}</span>
+                    <span className="text">{address(vacancy)}</span>
                 </p>
                 {salary(vacancy) != '' &&
                     <p>
                         <span className="text-gray">Salary </span>
-                        <span>{salary(vacancy)}</span>
+                        <span className="text">{salary(vacancy)}</span>
                     </p>}
             </div>
             <div className="vacancy-card__description">
@@ -111,8 +111,8 @@ export default function JobCard({ vacancy }: { vacancy: Item }) {
                 </div>
                 <button className='vacancy-card__expand-button' ref={expandRef.current}
                     onClick={() => setExpandedDescription((prevState) => !prevState)}>
-                    {expandedDescription ? "Less details" : "More details"}
-                    <ChevronDown className="chevron" />
+                    {expandedDescription ? "Less details"  : "More details"}
+                    {expandedDescription ? <ChevronUp className="chevron" /> : <ChevronDown className="chevron" />}
                 </button>
             </div>
         </div>

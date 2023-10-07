@@ -1,4 +1,4 @@
-h1 {
+.header {
     font-size: 48px;
     font-weight: 500;
     line-height: 58px;
@@ -7,7 +7,7 @@ h1 {
     margin: 40px auto auto 40px;
 }
 
-ul {
+.vacancy-list {
     list-style: none;
     padding: 40px;
     display: flex;
@@ -15,7 +15,7 @@ ul {
     flex-direction: column;
 }
 
-.filters_section {
+.filters {
     display: flex;
     flex-direction: row;
     gap: 32px;
@@ -23,13 +23,13 @@ ul {
     margin-top: 40px;
 }
 
-.filters_section div {
+.filters-section {
     display: flex;
     flex-direction: row;
     gap: 16px;
 }
 
-.filters_section div div {
+.filter {
     display: flex;
     flex-direction: column;
     gap: 4px;
@@ -91,7 +91,7 @@ ul {
     margin: 0px;
 }
 
-select {
+.filters-section__selector {
     width: 265.5px;
     height: 44px;
     padding: 4px 12px 4px 12px;
@@ -109,7 +109,7 @@ option[value=""] {
 }
 
 @media (max-width: 750px) {
-    .filters_section {
+    .filters {
         display: flex;
         flex-direction: column;
         gap: 32px;
@@ -118,19 +118,19 @@ option[value=""] {
         margin-right: 40px;
     }
 
-    .filters_section div {
+    .filters-section {
         display: flex;
         flex-direction: column;
         gap: 16px;
     }
 
-    .filters_section div div {
+    .filter {
         display: flex;
         flex-direction: column;
         gap: 4px;
     }
 
-    select {
+    .filters-section__selector {
         width: auto;
     }
 }
