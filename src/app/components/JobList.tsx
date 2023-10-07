@@ -16,7 +16,6 @@ export default function JobList() {
 
     const [data, setData] = useState<Data | null>(null);
     const [loading, setLoading] = useState(true);
-    const [error, setError] = useState<string | null>(null);
     const [currentPage, setCurrentPage] = useState(0);
 
     const [formOptions, setFormOptions] = useState<Option[]>([]);
@@ -60,7 +59,6 @@ export default function JobList() {
                 setLoading(false);
             })
             .catch((error) => {
-                setError(error.message);
                 setLoading(false);
             });
     }

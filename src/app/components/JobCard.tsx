@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState } from "react";
 import ChevronDown from '../icons/chevronDown.svg';
 import ChevronUp from '../icons/chevronUp.svg';
 import './styles/JobCard.css'
@@ -10,8 +10,6 @@ export default function JobCard({ vacancy }: { vacancy: Item }) {
 
     const [description, setDescription] = useState("");
     const [expandedDescription, setExpandedDescription] = useState(false);
-
-    const expandRef = useRef()
 
     useEffect(() => {
         fetch(vacancy.url)
@@ -108,7 +106,7 @@ export default function JobCard({ vacancy }: { vacancy: Item }) {
                         className={`description-content ${expandedDescription ? 'expanded' : 'hidden'}`}
                         dangerouslySetInnerHTML={{ __html: description }} />
                 </div>
-                <button className='vacancy-card__expand-button' ref={expandRef.current}
+                <button className='vacancy-card__expand-button'
                     onClick={() => setExpandedDescription((prevState) => !prevState)}>
                     {expandedDescription ? "Less details"  : "More details"}
                     {expandedDescription ? <ChevronUp className="chevron" /> : <ChevronDown className="chevron" />}

@@ -19,9 +19,7 @@ export default function Form() {
     };
 
     const handleSubmit = () => {
-        if (initials.trim() !== '' && phone.trim() !== '' && email.trim() !== '') {
-            alert(`Name: ${initials} \nPhone: ${phone} \nEmail: ${email} \nComment: ${comment}`)
-        };
+        alert(`Name: ${initials} \nPhone: ${phone} \nEmail: ${email} \nComment: ${comment}`)
     }
 
     const getNumbers = (s: String) => s.replace(/\D/g, '');
@@ -72,9 +70,11 @@ export default function Form() {
         setPhoneValid(isValid);
     }
 
+    const isValidForm = () => !(initials === '' || phoneValid == false || emailValid == false);
+
     return (
         <div>
-            <form className="form-request">
+            <form className="form-request" onSubmit={e => e.preventDefault()}>
                 <h2 className="form-request__title">Leave a request</h2>
                 <p className="form-request__text">We will advise you and help you start a new project</p>
                 <div className="form-request__input-section">
@@ -103,7 +103,6 @@ export default function Form() {
                         type="tel"
                         className="phone"
                         placeholder="+7 (___) ___-__-__"
-                        pattern="^((\\+[7])|[8]){1}[0-9]{10}"
                         value={phone}
                         onChange={handlePhoneChange}
                     />
@@ -117,9 +116,7 @@ export default function Form() {
                         onChange={(e) => setComment(e.target.value)}
                     />
                 </div>
-                {initials === '' || phoneValid == false || emailValid == false ?
-                    <button className='send-form__disabled' disabled>Submit</button> :
-                    <button className='send-form' onClick={handleSubmit}>Submit</button>}
+                <button className={isValidForm() ? 'send-form' : 'send-form__disabled'} disabled={!isValidForm()} onClick={handleSubmit}>Submit</button>
                 <p className="form-request__text">By clicking "Send" you confirm your consent to the<br />
                     <a href="" className="link">processing of personal data</a></p>
             </form>
