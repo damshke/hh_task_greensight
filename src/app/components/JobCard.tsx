@@ -4,61 +4,7 @@ import { useEffect, useState, useRef } from "react";
 import ChevronDown from '../icons/chevronDown.svg';
 import ChevronUp from '../icons/chevronUp.svg';
 import './styles/JobCard.css'
-
-type Adress = {
-    city?: string;
-    raw?: string;
-}
-
-type Area = {
-    name: string;
-}
-
-type Salary = {
-    from?: number;
-    to?: number;
-    currency?: string;
-}
-
-type Metro = {
-    station_name: string;
-    line_name: string;
-}
-
-type Logos = {
-    original?: string;
-}
-
-type Employer = {
-    name: string;
-    logo_urls?: Logos;
-}
-
-type Experience = {
-    name?: string;
-}
-
-type Employment = {
-    name?: string;
-}
-
-type Item = {
-    id: string;
-    name: string;
-    area: Area;
-    address: Adress;
-    salary: Salary;
-    merto_stations: Metro;
-    employer: Employer;
-    experience: Experience;
-    employment: Employment;
-    url: string;
-    alternate_url: string;
-};
-
-//  ОСТАЛОСЬ СДЕЛАТЬ:
-// 2. кнопка респонд (прсто алерт?)
-// 3. собственно css
+import { Item } from "../types/Data";
 
 export default function JobCard({ vacancy }: { vacancy: Item }) {
 
@@ -84,34 +30,28 @@ export default function JobCard({ vacancy }: { vacancy: Item }) {
     }
 
     const salary = (vacancy: Item) => {
-        if (vacancy.salary) {
-            if (vacancy.salary.from && vacancy.salary.to && vacancy.salary.currency) {
-                return `${vacancy.salary.from} - ${vacancy.salary.to}, ${vacancy.salary.currency}`
-            }
+        const { salary } = vacancy;
 
-            if (vacancy.salary.from && vacancy.salary.to) {
-                return `${vacancy.salary.from} - ${vacancy.salary.to}`
-            }
-
-            if (vacancy.salary.from && vacancy.salary.currency) {
-                return `from ${vacancy.salary.from}, ${vacancy.salary.currency}`
-            }
-
-            if (vacancy.salary.to && vacancy.salary.currency) {
-                return `to ${vacancy.salary.from}, ${vacancy.salary.currency}`
-            }
-
-            if (vacancy.salary.from) {
-                return `from ${vacancy.salary.from}`
-            }
-
-            if (vacancy.salary.to) {
-                return `to ${vacancy.salary.from}`
-            }
-        }
-        else {
+        if (!salary) {
             return '';
         }
+
+        const { from, to, currency } = salary;
+        const parts: string[] = [];
+
+        if (from) {
+            parts.push(`from ${from}`);
+        }
+
+        if (to) {
+            parts.push(`to ${to}`);
+        }
+
+        if (currency) {
+            parts.push(currency);
+        }
+
+        return parts.join(' ');
     }
 
     const logo = (vacancy: Item) => {
@@ -121,10 +61,6 @@ export default function JobCard({ vacancy }: { vacancy: Item }) {
         else {
             return '';
         }
-    }
-
-    function clickRespond() {
-
     }
 
     return (
@@ -173,16 +109,11 @@ export default function JobCard({ vacancy }: { vacancy: Item }) {
                         className={`description-content ${expandedDescription ? 'expanded' : 'hidden'}`}
                         dangerouslySetInnerHTML={{ __html: description }} />
                 </div>
-                {expandedDescription == false && <button className='vacancy-card__expand-button' ref={expandRef.current}
+                <button className='vacancy-card__expand-button' ref={expandRef.current}
                     onClick={() => setExpandedDescription((prevState) => !prevState)}>
-                    More details
+                    {expandedDescription ? "Less details" : "More details"}
                     <ChevronDown className="chevron" />
-                </button>}
-                {expandedDescription == true && <button className='vacancy-card__expand-button' ref={expandRef.current}
-                    onClick={() => setExpandedDescription((prevState) => !prevState)}>
-                    Less details
-                    <ChevronUp className="chevron" />
-                </button>}
+                </button>
             </div>
         </div>
     );

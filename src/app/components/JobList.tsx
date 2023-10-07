@@ -4,62 +4,7 @@ import { useState, useEffect, useRef } from 'react'
 import JobCard from './JobCard'
 import Close from '../icons/close.svg'
 import './styles/JobList.css'
-
-type Adress = {
-    city?: string;
-    raw?: string;
-}
-
-type Area = {
-    name: string;
-}
-
-type Salary = {
-    from?: number;
-    to?: number;
-    currency?: string;
-}
-
-type Metro = {
-    station_name: string;
-    line_name: string;
-}
-
-type Logos = {
-    original?: string;
-}
-
-type Employer = {
-    name: string;
-    logo_urls?: Logos;
-}
-
-type Experience = {
-    name?: string;
-}
-
-type Employment = {
-    name?: string;
-}
-
-type Item = {
-    id: string;
-    name: string;
-    area: Area;
-    address: Adress;
-    salary: Salary;
-    merto_stations: Metro;
-    employer: Employer;
-    experience: Experience;
-    employment: Employment;
-    url: string;
-    alternate_url: string;
-};
-
-type Data = {
-    items: Item[];
-    pages: number;
-}
+import { Data } from '../types/Data'
 
 type Option = {
     id: string;
@@ -81,7 +26,6 @@ export default function JobList() {
 
 
     const searchVacancies = (page: number) => {
-        console.log(selectedForm, selectedExperience);
         let search = {
             page: String(page),
             per_page: String(ITEMS_PER_PAGE)
@@ -153,105 +97,6 @@ export default function JobList() {
         if (selectedForm == null && selectedExperience == null) searchVacancies(0);
     }, [selectedForm, selectedExperience]);
 
-    if (loading) {
-        return (
-            <div>
-                <h1>List of vacancies</h1>
-                <div className='card-container'>
-                    <div className='filters_section'>
-                        <div>
-                            <div>
-                                <label>Form</label>
-                                <select required
-                                    value={selectedForm?.id || ''}
-                                    onChange={(e) => setSelectedForm((prev) => ({ ...prev, id: String(e.target.value) }))}
-                                >
-                                    <option value='' disabled selected>Not selected</option>
-                                    {formOptions.map((option) => (
-                                        <option key={option.id} value={option.id}>
-                                            {option.name}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div>
-                                <label>Experience</label>
-                                <select required
-                                    value={selectedExperience?.id || ''}
-                                    onChange={(e) => setSelectedExperience((prev) => ({ ...prev, id: String(e.target.value) }))}
-                                >
-                                    <option value='' disabled selected>Not selected</option>
-                                    {experienceOptions.map((option) => (
-                                        <option key={option.id} value={option.id}>
-                                            {option.name}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                        </div>
-                        <button className='searchButton' onClick={() => searchVacancies(0)}>Search</button>
-                    </div>
-                    {(selectedForm != null || selectedExperience != null) && <button className='clearButton' onClick={clearFilters}>
-                        <Close className="closeIcon" />
-                        Clear filters</button>}
-                </div>
-                <p className='loading-section'>Loading...</p>
-            </div>
-        );
-    }
-
-    if (error) {
-        return <p>Error: {error}</p>;
-    }
-
-    if (!data?.items || data.items.length === 0) {
-        return (
-            <div>
-                <h1>List of vacancies</h1>
-                <div className='card-container'>
-                    <div className='filters_section'>
-                        <div>
-                            <div>
-                                <label>Form</label>
-                                <select required
-                                    value={selectedForm?.id || ''}
-                                    onChange={(e) => setSelectedForm((prev) => ({ ...prev, id: String(e.target.value) }))}
-                                >
-                                    <option value='' disabled selected>Not selected</option>
-                                    {formOptions.map((option) => (
-                                        <option key={option.id} value={option.id}>
-                                            {option.name}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                            <div>
-                                <label>Experience</label>
-                                <select required
-                                    value={selectedExperience?.id || ''}
-                                    onChange={(e) => setSelectedExperience((prev) => ({ ...prev, id: String(e.target.value) }))}
-                                >
-                                    <option value='' disabled selected>Not selected</option>
-                                    {experienceOptions.map((option) => (
-                                        <option key={option.id} value={option.id}>
-                                            {option.name}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                        </div>
-                        <button className='searchButton' onClick={() => searchVacancies(0)}>Search</button>
-                    </div>
-                    {(selectedForm != null || selectedExperience != null) && <button className='clearButton' onClick={clearFilters}>
-                        <Close className="closeIcon" />
-                        Clear filters</button>}
-                </div>
-            </div>
-        );
-    }
-
-    const hasMorePages = currentPage <= data.pages;
-
     return (
         <div>
             <h1>List of vacancies</h1>
@@ -259,11 +104,12 @@ export default function JobList() {
                 <div>
                     <div>
                         <label>Form</label>
-                        <select required
+                        <select
+                            defaultValue={''}
                             value={selectedForm?.id || ''}
                             onChange={(e) => setSelectedForm((prev) => ({ ...prev, id: String(e.target.value) }))}
                         >
-                            <option value='' disabled selected>Not selected</option>
+                            <option value=''>Not selected</option>
                             {formOptions.map((option) => (
                                 <option key={option.id} value={option.id}>
                                     {option.name}
@@ -273,11 +119,12 @@ export default function JobList() {
                     </div>
                     <div>
                         <label>Experience</label>
-                        <select required
+                        <select
+                            defaultValue={''}
                             value={selectedExperience?.id || ''}
                             onChange={(e) => setSelectedExperience((prev) => ({ ...prev, id: String(e.target.value) }))}
                         >
-                            <option value='' disabled selected>Not selected</option>
+                            <option value=''>Not selected</option>
                             {experienceOptions.map((option) => (
                                 <option key={option.id} value={option.id}>
                                     {option.name}
@@ -291,14 +138,15 @@ export default function JobList() {
             {(selectedForm != null || selectedExperience != null) && <button className='clearButton' onClick={clearFilters}>
                 <Close className="closeIcon" />
                 Clear filters</button>}
-            <ul>
-                {data.items.map((item) => (
-                    <li key={item.id}>
-                        <JobCard vacancy={item} />
-                    </li>
-                ))}
-            </ul>
-            {hasMorePages && <button className='showMoreButton' onClick={showMore}>Show more</button>}
+            {loading ? <p className='loading-section'>Loading...</p> :
+                <ul>
+                    {data?.items.map((item) => (
+                        <li key={item.id}>
+                            <JobCard vacancy={item} />
+                        </li>
+                    ))}
+                </ul>}
+            {data && currentPage <= data.pages && <button className='showMoreButton' onClick={showMore}>Show more</button>}
         </div>
     );
 }
