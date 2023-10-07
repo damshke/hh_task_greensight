@@ -24,7 +24,6 @@ export default function JobList() {
     const [selectedForm, setSelectedForm] = useState<Option | null>(null);
     const [selectedExperience, setSelectedExperience] = useState<Option | null>(null);
 
-
     const searchVacancies = (page: number) => {
         let search = {
             page: String(page),
@@ -93,10 +92,6 @@ export default function JobList() {
         setSelectedForm(null);
     };
 
-    useEffect(() => {
-        if (selectedForm == null && selectedExperience == null) searchVacancies(0);
-    }, [selectedForm, selectedExperience]);
-
     return (
         <div>
             <h1 className="header">List of vacancies</h1>
@@ -131,10 +126,10 @@ export default function JobList() {
                         </select>
                     </div>
                 </div>
-                <button className='searchButton' onClick={() => searchVacancies(0)}>Search</button>
+                <button className='search-button' onClick={() => searchVacancies(0)}>Search</button>
             </div>
-            {(selectedForm != null || selectedExperience != null) && <button className='clearButton' onClick={clearFilters}>
-                <Close className="closeIcon" />
+            {(selectedForm != null || selectedExperience != null) && <button className='clear-button' onClick={clearFilters}>
+                <Close className="close-icon" />
                 Clear filters</button>}
             {loading ? <p className='loading-section'>Loading...</p> :
                 <ul className='vacancy-list'>
@@ -144,7 +139,7 @@ export default function JobList() {
                         </li>
                     ))}
                 </ul>}
-            {data && currentPage <= data.pages && <button className='showMoreButton' onClick={showMore}>Show more</button>}
+            {data && currentPage <= data.pages && <button className='show-more-button' onClick={showMore}>Show more</button>}
         </div>
     );
 }

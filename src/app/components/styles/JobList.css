@@ -35,14 +35,14 @@
     gap: 4px;
 }
 
-.closeIcon {
+.close-icon {
     vertical-align: middle;
     margin-right: 4px;
     color: #0D7AD9;
 }
 
-.searchButton,
-.showMoreButton {
+.search-button,
+.show-more-button {
     height: 44px;
     border-radius: 4px;
     background-color: #0D7AD9;
@@ -59,13 +59,12 @@
     margin-top: 18px;
 }
 
-.searchButton:hover,
-.showMoreButton:hover,
-.sendForm:hover {
+.search-button:hover,
+.showMore-button:hover {
     background-color: #175098;
 }
 
-.clearButton {
+.clear-button {
     border: none;
     box-shadow: none;
     background-color: white;
@@ -82,13 +81,14 @@
     padding: 4px;
 }
 
-.showMoreButton {
+.show-more-button {
     position: relative;
     left: 50%;
     transform: translate(-50%, 0);
     top: -55px;
     bottom: -55px;
     margin: 0px;
+    cursor: pointer;
 }
 
 .filters-section__selector {

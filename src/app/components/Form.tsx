@@ -8,8 +8,8 @@ export default function Form() {
     const [email, setEmail] = useState('');
     const [comment, setComment] = useState('');
 
-    const [phoneValid, setPhoneValid] = useState(true);
-    const [emailValid, setEmailValid] = useState(true);
+    const [phoneValid, setPhoneValid] = useState(false);
+    const [emailValid, setEmailValid] = useState(false);
 
     const handleEmailChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setEmail(event.target.value);
@@ -39,6 +39,7 @@ export default function Form() {
             if (data && /\D/g.test(data)) {
                 input.value = inputNumbers
             }
+            setPhoneValid(false);
             return
         }
 
@@ -66,6 +67,9 @@ export default function Form() {
             formattedInput = '+' + inputNumbers.substring(0, 16);
         }
         setPhone(formattedInput);
+        const regex = /^(\+7|7|8)?[\s\-]?\(?[489][0-9]{2}\)?[\s\-]?[0-9]{3}[\s\-]?[0-9]{2}[\s\-]?[0-9]{2}$/;
+        const isValid = regex.test(formattedInput);
+        setPhoneValid(isValid);
     }
 
     return (
@@ -114,19 +118,19 @@ export default function Form() {
                     />
                 </div>
                 {initials === '' || phoneValid == false || emailValid == false ?
-                    <button className='sendForm-disabled' disabled>Submit</button> :
-                    <button className='sendForm' onClick={handleSubmit}>Submit</button>}
+                    <button className='send-form__disabled' disabled>Submit</button> :
+                    <button className='send-form' onClick={handleSubmit}>Submit</button>}
                 <p className="form-request__text">By clicking "Send" you confirm your consent to the<br />
                     <a href="" className="link">processing of personal data</a></p>
             </form>
             <div className="footer">
-                <div className="left__footer">
-                    <p>+7 499 391-66-69</p>
-                    <p>mail@greensight.ru</p>
+                <div className="left-footer">
+                    <a className="left-footer__link" href="tel:+7 499 391-66-69">+7 499 391-66-69</a>
+                    <a className="left-footer__link" href="mailto:mail@greensight.ru">mail@greensight.ru</a>
                 </div>
-                <div className="right__footer">
+                <div className="right-footer">
                     <p>322A, 2nd Floor, Zelenograd, Moscow, Russia</p>
-                    <a href="about:blank" className="link">Directions</a>
+                    <a href="about:blank" className="right-footer__link">Directions</a>
                 </div>
             </div>
         </div>

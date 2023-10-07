@@ -64,7 +64,6 @@ export default function JobCard({ vacancy }: { vacancy: Item }) {
     }
 
     return (
-
         <div className='vacancy-card'>
             <div className="vacancy-card__head">
                 <div>
@@ -72,7 +71,7 @@ export default function JobCard({ vacancy }: { vacancy: Item }) {
                     {logo(vacancy) != '' && <img className="vacancy-card__logo" src={logo(vacancy)}></img>}
                 </div>
                 <a
-                    className="respondButton"
+                    className="respond-button"
                     href={vacancy.alternate_url}
                     target="_blank"
                     rel="noopener noreferrer"

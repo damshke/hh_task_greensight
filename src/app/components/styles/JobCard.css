@@ -93,7 +93,7 @@
     text-align: left;
 }
 
-.respondButton {
+.respond-button {
     height: 20px;
     padding: 8px 32px 8px 32px;
     border-radius: 4px;
@@ -107,10 +107,12 @@
     letter-spacing: 0.02em;
     text-align: left;
     margin-top: 12px;
+    text-decoration-line: none;
 }
 
-.respondButton:hover {
+.respond-button:hover {
     background-color: #131313;
+    cursor: pointer;
 }
 
 @media (max-width: 750px) {
